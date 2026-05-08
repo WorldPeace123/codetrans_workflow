@@ -1,0 +1,24 @@
+openblas_level2:
+  api_style: cblas
+  min_precisions: 2
+  interfaces:
+    - cblas_sgemv
+    - cblas_dgemv
+    - cblas_sgbmv
+    - cblas_dgbmv
+    - cblas_ssymv
+    - cblas_dsymv
+    - cblas_ssbmv
+    - cblas_dsbmv
+    - cblas_strmv
+    - cblas_dtrmv
+    - cblas_stbmv
+    - cblas_dtbmv
+    - cblas_strsv
+    - cblas_dtrsv
+    - cblas_stbsv
+    - cblas_dtbsv
+    - cblas_sger
+    - cblas_dger
+    - cblas_ssyr
+    - cblas_dsyr

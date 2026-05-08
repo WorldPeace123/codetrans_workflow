@@ -1,0 +1,32 @@
+operators:
+  - name: sign
+    module: sign
+    kind: elementwise
+    public_functions:
+      - sign
+      - dsign
+      - csign
+      - zsign
+    dtypes:
+      - float32
+      - float64
+      - complex64
+      - complex128
+    signature: "(x, out=None) -> torch.Tensor"
+    semantics: "Elementwise sign family. sign handles float32, dsign handles float64, csign handles complex64, and zsign handles complex128. Real variants match torch.sign: -1 for negative, 0 for zero, 1 for positive. Complex variants match torch.sgn: x / abs(x), with zero mapped to zero."
+    reference: "torch.sign for real tensors and torch.sgn for complex tensors"
+    edge_cases:
+      - "zero-sized tensors return an empty tensor without invalid kernel launches"
+      - "real zeros produce zero"
+      - "complex zero values produce 0+0j"
+      - "out, when provided, must have the same shape, dtype, and device as x"
+      - "float64 and complex128 tests must skip when the target device does not support fp64"
+    kernel_policy: "Use one generic real Triton kernel for sign/dsign and one generic complex real-view kernel for csign/zsign. Do not create dtype-specific float32/float64 kernels. Complex kernel should compute magnitude safely and avoid NaN for zero inputs."
+    result_policy: "returns out when provided; otherwise returns a newly allocated tensor"
+    notes:
+      - "Import tests directly from flag_blas.ops.generated.sign unless project top-level exports are explicitly updated."
+      - "Benchmark baseline must compare equivalent torch.sign or torch.sgn work."
+    paths:
+      operator: src/flag_blas/ops/generated/sign.py
+      functional_test: tests/test_sign.py
+      benchmark: benchmark/test_sign_perf.py

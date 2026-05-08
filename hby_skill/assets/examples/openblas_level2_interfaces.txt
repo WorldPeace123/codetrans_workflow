@@ -1,0 +1,23 @@
+# HBY parser skill input example.
+# Put multiple OpenBLAS Level-2 interfaces and types in one txt file.
+
+kind: openblas_level2
+api_style: cblas
+min_precisions: 2
+
+# Function-like names can carry precision by prefix.
+cblas_sgemv float32
+cblas_dgemv float64
+
+# One interface plus multiple explicit types expands to the full family.
+cblas_sgbmv float32,float64
+
+# Family names are also accepted.
+symv: s,d
+sbmv float32 float64
+trmv fp32 fp64
+tbmv s d
+trsv float32,float64
+tbsv: float32,float64
+ger s,d
+syr float32 float64

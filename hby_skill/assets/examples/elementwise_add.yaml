@@ -1,0 +1,28 @@
+operators:
+  - name: elementwise_add
+    module: elementwise_add
+    kind: elementwise
+    public_functions:
+      - elementwise_add
+    dtypes:
+      - float16
+      - bfloat16
+      - float32
+      - float64
+    signature: "(x, y, out=None) -> torch.Tensor"
+    semantics: "Elementwise addition. Computes out = x + y for same-shaped tensors. If out is provided, write into out and return it; otherwise allocate and return a new tensor."
+    reference: "torch.add"
+    edge_cases:
+      - "x and y must have the same shape unless the spec is extended to allow broadcasting"
+      - "out, when provided, must have the same shape, dtype, and device as x"
+      - "zero-element tensors return an empty tensor without launching invalid grids"
+      - "float64 tests must skip when the target device does not support fp64"
+    kernel_policy: "Use one generic elementwise Triton kernel across floating dtypes. Do not split float16/bfloat16/float32/float64 into separate kernels."
+    result_policy: "returns out when out is provided; otherwise returns a newly allocated tensor"
+    notes:
+      - "Use a 1-D logical flattening strategy for same-shaped tensors."
+      - "Benchmark should compare against torch.add with equivalent allocation or out behavior."
+    paths:
+      operator: src/flag_blas/ops/generated/elementwise_add.py
+      functional_test: tests/test_elementwise_add.py
+      benchmark: benchmark/test_elementwise_add_perf.py

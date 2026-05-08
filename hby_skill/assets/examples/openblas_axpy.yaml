@@ -1,0 +1,32 @@
+operators:
+  - name: axpy
+    module: axpy
+    kind: openblas_level1
+    public_functions:
+      - saxpy
+      - daxpy
+      - caxpy
+      - zaxpy
+    dtypes:
+      - float32
+      - float64
+      - complex64
+      - complex128
+    signature: "(n, alpha, x, incx, y, incy) -> None"
+    semantics: "BLAS/OpenBLAS AXPY. Mutates y in place as y_i = alpha * x_i + y_i for i in [0, n), using positive incx and incy strides."
+    reference: "OpenBLAS cblas_saxpy/cblas_daxpy/cblas_caxpy/cblas_zaxpy and BLAS AXPY semantics"
+    edge_cases:
+      - "n <= 0 is a no-op"
+      - "incx and incy must be positive"
+      - "x and y are one-dimensional tensors"
+      - "only the logical strided y view may be modified"
+      - "float64 and complex128 tests must skip when the target device does not support fp64"
+    kernel_policy: "Use one generic real Triton kernel for saxpy/daxpy and one generic complex kernel for caxpy/zaxpy. Do not create dtype-specific saxpy_kernel/daxpy_kernel/caxpy_kernel/zaxpy_kernel."
+    result_policy: "in-place mutation of y; return None"
+    notes:
+      - "Represent dtype-sensitive alpha as a device scalar tensor or pass through a safe project-local scalar convention."
+      - "For complex tensors, use flattened real views in Triton pointer arithmetic."
+    paths:
+      operator: src/flag_blas/ops/level1/axpy.py
+      functional_test: tests/test_axpy.py
+      benchmark: benchmark/test_axpy_perf.py

@@ -1,0 +1,4 @@
+interface:
+  display_name: "HBY Operator Pipeline"
+  short_description: "Parse operator specs, generate Triton code, validate pytest/benchmark output, and repair with DeepSeek V4 Pro."
+  default_prompt: "Use hby-skill to preflight the environment, parse txt/YAML/JSON operator specs, generate Triton implementations with pytest and benchmarks, validate them, and repair failures."
